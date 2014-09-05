@@ -1,0 +1,705 @@
+#-------------------------------#
+#         SLASH解析資料         #
+#-------------------------------#
+
+#--------------------------------------------------------------
+# 文字列操作関連
+3aa5a1[128]	AsciiAttrTable	アスキー文字に対応した属性テーブル。各ビットの意味は下記のとおり
+							0x01 : 英小文字
+							0x02 : 英大文字
+							0x04 : 数字
+							0x08 : 改行とか？
+							0x10 : 記号
+							0x20 : 制御文字
+							0x40 : hex文字
+							0x80 : Space
+
+#--------------------------------------------------------------
+# 空きデータ領域
+0x36becc-0x36bf00 data
+0x3aaa88-0x3aab00 ro
+
+0x36becc[4] : ggsext::cur_draw_obj_info
+
+#--------------------------------------------------------------
+# キャラ情報
+33a4ac(4) : 1P 0＝ノーマル、1＝金、2＝黒 
+33a4b0(4) : 2P 0＝ノーマル、1＝金、2＝黒 
+
+33a4b4(4) : 1P EX 1 or 0
+33a4b8(4) : 2P EX 1 or 0
+
+#--------------------------------------------------------------
+# データファイル内情報
+SCDDATA.BIN
+  274000(2000) ヘルプテキスト(sol)
+       :
+  2a5000(2000) ヘルプテキスト(aba)
+  2a7000(2000) ヘルプテキスト(special)
+
+  323000       データパック idx=0x0bにVSBGM
+  6e22f0       VSBGM(L)
+  7122f0       VSBGM(R)
+  742800       データパック idx=0x0bにVSBGM
+  aec240       VSBGM(L)
+  b1c240       VSBGM(R)
+  b4c800       共通サウンド
+ 8e7d000       データパック
+ 8ec2000       VSBGM(L)
+ 8ff2000       VSBGM(R)
+
+#--------------------------------------------------------------
+# GameMode2状態 33a178
+0x00	ATLD	起動時
+0x01	ATSV	???
+0x02	VGASL	Movie?
+0x03			Title準備
+0x05	GINI	VS-Demo終了
+0x06	----	Battle
+0x08			Reset
+0x09	TITL	Title
+0x0a			何もしない
+0x10			NextStage
+0x0f	SLCT	Chara-Select
+0x11	VS		VS-Demo
+0x12	PR		Chara-PR
+0x14	WIN		Win-Demo
+0x16	EDWIN	
+0x19	SMENU	MainMenu(Shortcut)
+		OPTION	MainMenu
+0x2b	SREXEC	?
+0x2c	CREXEC	?
+0x2d	MVEXEC	Movie
+0x2e	MSWIN
+0x2f	SVRST
+0x30	GLMAIN
+0x31	SVLVST
+0x33	SMEXEC
+
+■BattleObjectInfo
+1ecc800[0x104] 1ecc800[0x2]が本体,1ecca10[0x60]がSlave,1ed2b90[0x180]がEffect
+0x00[2] object_id		
+	[1] dir				表示上の向き
+	[1] dir_internal	実際の向き
+	[4] flag			1=enable 8=draw
+	[4] _08
+	[4] _0c
+0x10[2] action_id
+	[2] _12				soのvvにて使用
+	[2] _14
+	[2] life			0-420
+	[4] parent_info_ptr	
+	[2] _1c
+	[1] _1e
+	[1] player_side		0=1P, 1=2P
+0x20[2] _20
+	[2] _22
+	[4] _24
+	[4] draw_method
+	[4] _2c
+0x30[4] _30
+	[4] encimg_ptr
+	[2] _38
+	[2] _3a
+	[2] _3c
+	[2] _3e
+0x40[4] _40
+	[2] _44
+	[2] _46
+	[2] scale_x
+	[2] scale_y
+	[2] _4c
+0x50[4] _50
+	[1] _54
+	[1] _55
+	[1] _56
+	[1] _57
+	[4] _58
+	[4] _5c
+0x60[4] _60				roの6Pにて使用
+	[4] _64				roの6Pにて使用
+	[4] _68
+	[4] _6c
+0x70[2] _70
+	[2] _72
+	[2] _74
+	[2] _76
+	[2] _78
+	[2] _7a
+	[2] _7c
+0x80[4] _80
+	[4] func_ptr
+	[4] pal_method		パレット制御関数ポインタ。エディとかロボとかは違う
+	[1] pal_id			名前が微妙だが、0=1Pパレット, 0x10=2Pパレット, 0xff=外部パレット
+	[1] extr_pal_ofs	外部パレットのオフセット(256色パレットの途中から参照できる)
+	[1] use_extr_pal	0=内部パレット 1=外部パレット 2=相手のパレット
+	[1] _8f
+0x90[2] _90
+	[2] _92
+	[2] _94
+	[2] image_idx
+	[4] _98
+	[1] _9c
+	[1] _9d
+	[1] _9e
+	[1] _9f
+0xa0[4] effect_flag		0x000400 : パレット変化？
+						0x001000 : 炎パレットアニメ
+						0x002000 : 雷パレットアニメ
+						0x100000 : 毒
+						0x040000 : ロボ
+	[4] pos_x			右が+
+	[4] pos_y			下が+ 地面が0
+	[4] _ac
+0xb0[4] _b0
+	[4] _b4				veの空中生成にて使用
+	[4] _b8				veの空中生成にて使用
+	[4] _bc
+0xc0[4] _c0
+	[4] _c4
+	[4] _c8
+	[4] _cc
+0xd0[2] angle			degree * 180
+	[2] 描画優先度		z値とも
+	[4] _d4
+	[4] _d8
+	[4] _dc
+0xe0[4] _e0
+	[4] _e4
+	[2] _e8
+	[2] _ea
+	[2] _ec
+	[2] _ee
+0xf0[1] _f0
+	[1] _f1
+	[1] _f2
+	[1] _f3
+	[1] _f4
+	[1] _f5
+	[1] transparent
+	[1] _f7
+	[4] _f8
+	[4] _fc
+	[4] _100
+
+oid	chr	item			aid	drw.mtd	pal.mtd	pid	expal	palofs	_70	_72	_74	_76	_78	_79	_7a	_8f	_90	_92	_94	_a0(e.flag)	dynpal	anim
+------------------------------------------------------------------------------------------------------------------------------------------------
+22	ve	ボール			9	0		1d9b38	-1	1		3		0	0	64	64	3	-1	158	0	40	279	2				1		0*
+23	ed	Eddie			0	0		1d9b38	-1	1		1		0	0	176	128	3	-1	165	0	40	0	2				1		0*
+30	ja	強化アイコン	
+4a	fa	愛				7	0		1d9b38	-1	1		6		0	0	512	512	3	-1	165	0	40	464	2				1		0
+4c	an	彩				12	0		1d9b38	-1	1		3		0	0	512	512	2	-1	165	0	40	353	2				1		0*
+55	jo	コインストック	3	1bc3d0	1d9b38	-1	0		0									0	0	299	0				0		0
+5b	za	霊
+5d	za	剣
+5e	br	ワイヤー
+92	br	Yoyo			0	0		1d9b38	-1	1		6		0	0	512	512	0	-1	8	0	40	314	2	00000000	1		0
+60	za	犬
+6a	ab	鍵(屈)			3	173b38	1d9b38	-1	1		0		0	0	512	512	2	-1	188	0	0	387	0	00002000	1		1
+6b	ab	パック	1つ目	7	175928	1d9b38	-1	0		0		0	0	0	0	0	0	158	0	0	294	0				1		0
+				2つ目	8	0		1d9b38	-1	0		0		0	0	0	0	0	0	158	0	0	294	0				1		0
+				3つ目	6	1738e0	1d9b38	-1	1		4		0	0	32	32	0	-1	63	0	0	294	0				1		0
+				ゲージ	1	0		1d9b38	-1	0		0
+6d	or	LvGauge	frame	0	148610	1d9b38	-1	1		2		0	0	128	32	1	-1	63	0	0	333	0				1		0*
+				bar		1	147650	1d9b38	-1	1		7		0	0	16	16	0	0	68	0	0	333	0				1		0*
+				Lv		2	148610	1d9b38	-1	1		3		0	0	128	32	1	0	63	0	0	333	0				1		0*
+				num		3	1486z10	1d9b38	-1	1		3		0	0	128	32	1	-1	63	0	0	333	0				1		0*
+b0		BG	paris 雲
+b1		BG	paris 日光
+
+#--------------------------------------------------------------
+# battle object param
+
+■CreateBattleObject_Effect(0x1c482c)の引数a2にソースデータとして渡されるデータブロックのレイアウト
+0x3aa9b0で確認されているがスタック領域なので基本不定。
+0x00[4]		flag
+	[4]		?
+	[4]		?
+	[4]		?
+0x10[4]		?
+	[4]		?
+	[2]		angle (degree * 180)
+	[2]		?
+	[4]		?
+0x20[4]		?
+	[4]		?
+	[4]		?
+	[4]		?
+
+#--------------------------------------------------------------
+# ファイル管理関連
+3b10a8[4] Last_Created_FileMgmtTab
+	最後に作成したFileMgmtTabのエントリid
+
+3b0828[0x88 * n] FileMgmtTab
+0x00[96]	path
+	[4]		buffer
+	[4]		file_offset
+0x9e[4]		file_size
+	[4]		?
+	[4]		?
+	[4]		?
+0xae[4]		?
+	[4]		id (-1のとき未使用。ファイルから読み込んだら-1にセットする？)
+	[4]		?
+	[4]		?
+
+3b116c[4] ファイル管理テーブル使用可能フラグ？
+	共通でファイル管理テーブルが使用可能かどうかみたいな用途だとおもう。
+	とりあえず初期化で003b08a4が0xffffffffになった時に1にしておく。
+
+3c84c0[4 * 12] FileMgmtTab_FileNo_Ary
+	FileMgmtTabのエントリ登録時にファイル番号を格納している
+
+3c84f0[4 * 12] FileMgmtTab_ID_Ary
+	FileMgmtTabのエントリ登録時にFileMgmtTab.idを格納している
+
+3c85b0[4 * 12] FileMgmtTab_BufPtr_Ary
+	FileMgmtTabの各エントリのバッファのポインタを持つ
+	FileMgmtTabのエントリ登録時ではなく、事前に12個分のバッファを確保してある
+
+3b088cなどの実際のファイルオフセットを17ビット右シフトしたものは2d9c5cのアーカイブファイルのオフセット値と一致する
+
+2d9b5c[8 * n] ArcvFileOffsetSizeTable
+	[4]		size
+	[4]		offset
+	アーカイブファイルのサイズとオフセットのテーブル
+	実際の値を11bit右シフトしたものが格納されている
+
+読み込み対象のファイル情報がコピー
+3b10d8
+
+#--------------------------------------------------------------
+# 描画関連
+
+■イメージデータ (scddata.bin)
+so	:9a79800
+ky	:9e5d000
+ma	:a221000
+mi	:a62b000
+ed	:b3fc000
+po	:ac56800
+ch	:b117000
+fa	:ba0f800
+ax	:a8d6800
+ba	:b6fa800
+an	:c5e9800
+ve	:cd84800
+jo	:c9ec000
+ja	:c27c800
+te	:be3f000
+di	:d002800
+br	:e456800
+sl	:d53d000
+za	:df54800
+in	:da40000
+ro	:e83a800
+ab	:ec8d800?
+or	:f19b000?
+kl	:f6e0000
+ju	:f985000
+
+■SpriteData
+40fce0[0x3c] DrawSprite()に渡すパラメータ
+0x00[4] sprite_idx
+	[4] 何かのポインタ	よくわからん。MCアクセスメッセージの場合は文字→index変換テーブルに見えるが…
+	[4] image_idx		(id << 6) + 0x2a6790でImageRefDataのアドレスを算出する
+	[4] pos x
+0x10[4] pos y
+	[4] pos z
+	[4] zoom y
+	[4] zoom x
+0x20[4] u1
+	[4] v1
+	[4] u2
+	[4] v2
+0x30[4]
+	[4] alpha
+	[1] ?
+	[1] 表示方法1(仮)
+	[1] 表示方法 (01:左 02:X中央 **:右 / 04:上 08:Y中央 10:水平反転 20:垂直反転)
+	[1] ?
+
+■ImageRefData
+2a6790[0x40] CreateGSPacket(118fc8)に引数で渡されるデータ。そこからGSパケットを組み立てている。
+0x00[4] ref_id
+	[4] ?
+	[4] (texW+0x7f) >> 7 << 1
+	[4] ImageData+6[2]
+0x10[4] ImageData+6[2]
+	[4] 0xffffffff
+	[4] ?
+	[4] EncodedData
+0x20[2] 画像エンコードタイプ
+	[2] texW
+	[2] texH
+	[2] request このフレームの使用要求数
+	[4] DecodedData 0xffffffffの時無効
+	[4] render_mode
+0x30[4] idx (とりあえず0xffffffffなら通る)
+	[2] bits_per_pixel
+	[2] fixed_pal (0x20=EncodedDataにパレットを持つ、0x00=持たない(外部パレットを使用))
+	[4] ?
+	[4] img_id (画像を一意に特定可能と思ったがそうでもない)
+
+■ImageDataヘッダ
+0x00[2] 画像エンコードタイプ
+	[2] fixed_pal (0x20=EncodedDataにパレットを持つ、0x00=持たない(外部パレットを使用))
+	[2] bits_per_pixel (ex.4bit=16個)
+	[2] texW
+0x08[2] texH
+	[2] wbit
+	[2] hbit
+	[2] img_id (画像を一意に特定可能と思ったがそうでもない)
+
+70000000[0x20 * n] Vertexデータ(spad)
+0x00[4] x
+	[4] y
+	[4] z
+	[4] ?
+0x10[4] u
+	[4] v
+	[4] color
+	[4] ?
+
+4c5000[0x10 * n] DMAタグデータ。_sceDmaTag
+0x00[2] qwc
+	[1] mark
+	[1] id
+	[4] data
+	[8] (PADDING)
+	ライブラリの構造体。sceDmaSendで列挙されたパケットをまとめて送っている
+
+420800	DMA転送データ。_sceDmaTag.dataフィールドから参照される。
+		GSの場合、CreateGSPacket(11b570)でここにパケットデータを生成している
+
+動的パレット使用可否
+sol
+	炎系全般			n
+
+ky
+	greed				n
+	剣の軌跡			n
+
+bri
+	yoyo				y
+	yoyo wire			n
+	星船yoyo			n
+	マーキング			y
+	俺キル炎			n
+
+anji
+	風神effect			n
+	彩					y
+	一撃				y
+	
+johnny
+	コイン				n
+	立ちP				n
+	ディバ				n
+	燕					n
+	カード				n
+	ミスト				n
+
+chipp
+	手裏剣				n
+
+jam
+	強化アイコン		y
+	geki				n
+	ryujin				y
+	
+
+venom
+	ball				y
+	dark angle			n
+	HS mad 足effect		n
+	ex ball level		n
+
+testament
+	hitomi				y
+	p soul				n
+	強化hitomiストック	y
+	カラス				y
+	サキュ				y
+	マーカー			n
+	ゼイネスト			n
+	投げ返り血			n
+
+or
+	gauge				y	(パレットアニメの影響を受けてしまう。実は動的パレット見ていない？それともパレットアニメにバグ？)
+
+aba
+	pack				n
+
+#--------------------------------------------------------------
+# アクション関連
+BattleObjectInfo._e4にフレームデータ(仮)が格納されている
+xxxxxxxx[0x4 * n] フレームデータ
+0x00[1] code 動作を制御する。
+		0x00	: 画像切り替え
+			data1=フレーム数。BattleObjectInfo._f0(frame)にコピーされる。
+			data2=セル番号。BattleObjectInfo._38(cell)にコピーされる。
+		0x61	: 
+		0xff	: 終端
+		etc		: ActCtrlMethodTable + code * 8 任意の関数を実行する
+				  複数のetcが連続していた場合、同一フレームにて実行される。
+			0x41: 
+
+	[1] data1		: codeによって用途が異なる
+	[2] data2		: codeによって用途が異なる
+
+■ActCtrlMethodTable
+002e7ca0[8 * n] アクションデータに含まれる識別子によりこのテーブル内の任意の関数を実行する
+0x00[4] 関数アドレス
+0x04[4] ？？？(4が多い)
+
+■アクションデータ
+[sol]
+01974f28	: idle
+0197500c	: jump up
+0197502c	: jump down
+019754ec	: landing
+01975540	: 5p
+01975588	: 5k
+
+[robo-ky]
+014f3b28	: idle1
+014f3b48	: idle2
+
+#--------------------------------------------------------------
+# img_idx
+ref_id img_id name
+00024b 009d4c max burst
+
+#--------------------------------------------------------------
+# stage関連
+01 london
+02 colony
+03 russia
+04 china
+05 may ship
+06 zepp
+07 nirvana
+08 paris
+09 hell
+0a grove
+0b verdant
+0c castle
+0d babylon
+0e phantom city
+0f unknown
+10 grave(kr)
+11 heaven
+12 ???
+13 frasco
+14 ad2172
+
+#--------------------------------------------------------------
+# BGM関連
+-1 停止
+00 anji
+01 assassins
+02 axl
+03 baiken
+04 same character
+05 character select
+06 chipp
+07 continue
+08 dizzy
+09 faust
+0a game over
+0b ino
+0c jam
+0d johnny
+0e ky
+0f boss ino
+10 may
+11 millia
+12 opening
+13 potemkin
+14 slayer
+15 sol
+16 sol vs ky
+17 testament
+18 venom
+19 vs demo
+1a bridget
+1b zappa
+1c eddie
+1d arcade ending 1
+1e arcade ending 2
+1f arcade ending 3
+20 robo-ky old
+21 kliff
+22 justice
+23 sol vs ky old
+24 same character old
+25 millia vs eddie old
+26 survival ending
+27 options
+28 robo-ky day
+29 robo-ky night
+2a aba
+2b order-sol
+
+#--------------------------------------------------------------
+# サウンド関連
+35	6b0c0	カーソル
+	6bb20	決定
+
+サウンドデータ
+bank  file ofs data addr
+sol-A 00c25800 00080000
+
+#--------------------------------------------------------------
+# Title関連
+33a168 MovieState
+
+0x40 : Arc Logo
+0x60 : Movie Stop
+0x01 : No Movie
+
+#--------------------------------------------------------------
+# キーコード
+2dcd70 1P今回入力
+2dce04 2P今回入力
+
+本来はlibpadからの入力を0x3add94に格納し、0x28c02cにそのポインタを格納している（1Pの場合）
+入力を2ea864(入力タイプ?)によって分けている
+
+上：0x0010
+下：0x0040
+左：0x0080
+右：0x0020
+○：0x2000
+×：0x8000
+△：0x1000
+□：0x4000
+L1：0x0400
+L2：0x0100
+R1：0x0800
+R2：0x0200
+SL：0x0001
+ST：0x0008
+
+#--------------------------------------------------------------
+# メモリーカード
+0061930 Time Limit (0=30 1=60 2=99 3=INF)
+0061932 Game Level (0=BEGINNER 1=EASY 2=NORMAL)
+00630fc ArcadeModeTotal Score (x5)
+  Name[4]
+  Score[4]
+0063128 ArcadeModeSol (x5)
+  Name[4]
+  Score[4]
+006352c MomModeTotal (x5)
+  Name[4]
+  Score[4]
+0063970 Help Text  (1=Sol 2=Ky)
+0063a0a Anti Alias (1=ON 0=OFF)
+0063a0b VictoryBGM (0=Mute 1=Fade)
+
+#--------------------------------------------------------------
+# Movie
+
+|Movie状態遷移表
++---------------+---------+---------+---------+---------+---------+---------+---------+---------+---------
+|               |IniStrInf|IniMovInf|ProcMov  |ProcMov  |         |         |
+|               |StopStr  |         |ChgMovSt |StartMov |108100   |106d50   |
++---------------+---------+---------+---------+---------+---------+---------+---------+---------+---------
+|state          |    0    |    0    |    1    |         |         |         |
+|state_keep     |    0    |    0    |    0    |         |    1    |         |
+|movie_playing  |         |    0    |         |    1    |         |         |
+|_1c(play)      |         |         |         |         |    1    |         |
+|_1c(ready)     |         |         |         |         |    0    |    1    |
+|_3c            |         |         |         |         |         |    1    |
++---------------+---------+---------+---------+---------+---------+---------+---------+---------+---------
+
+28bf78	[4]	state				0=再生不可 1=再生可 2=BGM再生? 3=???
+28bf7c	[4]	state_keep			1=stateが変化していない
+		[4]	ee_buffer			???
+		[4]	iop_uffer			???
+		[4]	_10					???
+		[4]	_14					???
+		[4]	_18(stop)			1=デコーダ生成済
+		[4]	_1c(play)			1=再生要求済
+		[4]	skip				MovieSkipされたときに1 それ以外0
+		[4]	_24					???
+		[4]	movie_no			PlayingMovieNo
+		[4]	_2c					1のとき0x10772cにてスキップされる
+		[4]	_movie_playing		実際に再生中なら1
+		[4]	_34					通常0x400
+		[4]	_38					通常0x400
+		[4]	_3c					???
+		[4]	_40(stop)			??? 1=BGM停止中 0=BGM再生中
+		[4]	_44(play)			??? 1=BGM再生中 0=BGM停止中
+		[4]	_48					???
+		[4]	_4c					???
+		[4]	_50					BGMID
+		[4]	_54					BGMPlaying1
+		[4]	_58					BGMPlaying2
+		[4]	_5c					???
+		[4]	_50					???
+		[4]	_54					???
+		[4]	_58(stop)			???
+		[4]	_5c(play)			???
+
+2a2750	[2]	PlayingMovieNo		1=OP 2=SEGALOGO 3=ARCLOGO -1=停止
+2a2752	[2]	MovieSkipAvailable	0=Startで飛ばせる 1=Startで飛ばせない
+2a2754	[2]	GameMode2AfterMovie	ムービー再生後のGameMode2の値(GameMode2については該当箇所参照)
+33a168	[4]	MovieState			0x01	OpMovie終了
+								0x02
+								0x04
+								0x08
+								0x10
+								0x20	ArcLogo終了
+								0x40	SegaLogo終了
+								0x80
+								
+								0x0208	OpMovie開始？
+3b5680	[4]	MoviePhase			0		
+								1		DVDからデータをロードする
+								2		ファイル管理テーブル
+
+・SEGA-LOGO
+[CPU] _file_load_thread_proc idx=7 buf=0x1160800 file=data\SLPM_663.33\\MOVIE_S.PCK ofs=0x41d3000 size=0x9c000
+・ARC-LOGO
+[CPU] _file_load_thread_proc idx=10 buf=0x1160800 file=data\SLPM_663.33\\MOVIE_S.PCK ofs=0x42ed000 size=0x200000
+[CPU] _file_load_thread_proc idx=12 buf=0x1160800 file=data\SLPM_663.33\\MOVIE_S.PCK ofs=0x44ed000 size=0x7b000
+[CPU] _file_load_thread_proc idx=13 buf=0x11db800 file=data\SLPM_663.33\\MOVIE_S.PCK ofs=0x4568000 size=0x7b000
+・SLASH-OP
+[CPU] _file_load_thread_proc idx=16 buf=0x1160800 file=data\SLPM_663.33\\MOVIE_S.PCK ofs=0x0 size=0x200000
+[CPU] _file_load_thread_proc idx=18 buf=0x1160800 file=data\SLPM_663.33\\MOVIE_S.PCK ofs=0x200000 size=0x7b000
+[CPU] _file_load_thread_proc idx=19 buf=0x11db800 file=data\SLPM_663.33\\MOVIE_S.PCK ofs=0x27b000 size=0x7b000
+
+mpeg info     = 0x3B56B8
+
+3b5698 [4] mpeg_buf_proc_pos          : バッファ内(DMA転送)位置
+3b569c [4] mpeg_buf_unproc_size/2048  : バッファ内未処理(DMA未転送)サイズ
+3b56a0 [4] mpeg_buf_read_size/2048    : ファイル→バッファ読込サイズ
+3b56ac [4] mpeg_buf_proc_size/2048    : バッファ内処理(DMA転送済)サイズ
+3b5764 [4] mpeg_data_size             : Movieの全体サイズ
+3b5770 [4] mpeg_data_loaded_size/2048 : Movieの読込済サイズ
+
+3b57d0 [4] mpeg_src_buf_ptr           : ソースバッファ(ファイル→PS2メインメモリ)のポインタ
+3b57d4 [4] mpeg_src_size/2048         : ソースバッファ(ファイル→PS2メインメモリ)のサイズ
+3b57e4 [4] mpeg_dst_buf_ptr           : デストバッファ(イメージ展開)のポインタ
+3b57e8 [4] mpeg_dst_size/2048         : デストバッファ(イメージ展開)のサイズ
+
+src  buffer   = 0x1160800(0x200000 = 0x400 * 2kb)
+dma  buffer   = 0x1360800(0x100000)
+dest buffer   = 0x1460800(0x300000)
+dma work area = 0x1760800(0x04e200)
+  0x176080c [4] MpegCallbackError
+  0x1760818 [4] MpegCallbackNodata
+  0x1760824 [4] MpegCallbackStopDma
+  0x1760830 [4] MpegCallbackRestartDma
+
+############################################################################
+# フリーエリア 
+# 0x010000-0x080000: 未定義
+# 0x010000[4]: ggsext::g_cur_draw_obj_info
+# 0x080000-0x0c0000: コード領域として確保
+# 0x0c0000-0x0ff000: 未定義
+# 0x0ff000-0x100000: VBL割り込み処理用のスタック領域

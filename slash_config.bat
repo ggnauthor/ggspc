@@ -1,0 +1,1 @@
+start bin\Config_Release\ggspc_config.exe SLPM_663.33

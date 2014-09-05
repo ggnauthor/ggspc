@@ -1,0 +1,1 @@
+del /F /S *.elf *.dump

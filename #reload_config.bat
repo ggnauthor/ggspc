@@ -1,0 +1,1 @@
+start bin\Config_Release\ggspc_config.exe SLPS_252.61
